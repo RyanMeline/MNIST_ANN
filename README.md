@@ -1,7 +1,6 @@
 # Ground up ANN for MNIST number set
 
-Initial Setup
----
+## Initial Setup
 In the root directory:<br>
 Download Eigen git submodule:<br>
 ```
@@ -13,8 +12,7 @@ cmake -S . -B build
 ```
 ---
 
-Build project:
----
+## Build project:
 From the root directory, run:
 ```
 cmake --build build
