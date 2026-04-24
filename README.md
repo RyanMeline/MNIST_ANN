@@ -6,7 +6,7 @@ Download Eigen git submodule:<br>
 ```
 git submodule update --init
 ```
-Initial project configuration:
+Initial build file configuration:
 ```
 cmake -S . -B build
 ```
@@ -17,11 +17,12 @@ From the root directory, run:
 ```
 cmake --build build
 ```
-Or from /build/
+Or from /build/ run:
 ```
 cmake --build .
 ```
 
 The binary will be specified in the output message of CMake<br>
 Default for me was /build/Debug/
+
 ---
