@@ -13,4 +13,6 @@ class Network {
         void train(const Eigen::VectorXf& input, uint8_t label, float learning_rate);
         int predict(const Eigen::VectorXf& input);
         float eval(const std::vector<Eigen::VectorXf>& images, const std::vector<uint8_t>& labels);
-}
+    private:
+        std::vector<Layer> layers;
+};
