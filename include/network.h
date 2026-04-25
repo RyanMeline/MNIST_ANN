@@ -8,7 +8,7 @@ class Network {
         void add_layer(int inputs, int outputs,
                     std::function<Eigen::VectorXf(const Eigen::VectorXf&)> act,
                     std::function<Eigen::VectorXf(const Eigen::VectorXf&)> act_derivative
-                        = [](const Eigen::VectorXf& x) { return x; });
+                        = [](const Eigen::VectorXf& x) { return Eigen::VectorXf::Ones(x.size()); });
         Eigen::VectorXf forward(const  Eigen::VectorXf& input);
         void backward(const Eigen::VectorXf& gradient, float learning_rate);
         void train(const Eigen::VectorXf& input, uint8_t label, float learning_rate);
