@@ -1,10 +1,3 @@
-/*
-
-Put ReLU, Sigmoid, Softmax in here
-and their derivatives for back prop
-Should be simple
-
-*/
 #include "../include/activation_functions.h"
 
 namespace activation_function {
@@ -12,11 +5,10 @@ namespace activation_function {
         return(std::max(0.0f, x));
     }
 
+    //For back prop
     float relu_back(float x) {
         return x > 0.0f ? 1.0f : 0.0f;
     }
-
-    
 
     // Equation:
     //  S(y_i) = (e^{y_i}) / sum(e^{y})
@@ -32,9 +24,7 @@ namespace activation_function {
         //Divides each variable by the sum of all
         return e / e.sum();
     }
-    //                  First iteration, did this to learn the math 
-    //                  before making it with Eigen Vectors
-
+    //                  SOFTMAX WITHOUT EIGEN
     // std::vector<float> softmax(std::vector<float>& input) {
     //     std::vector<float> probabilities;
     //     int input_size = input.size();
@@ -54,6 +44,5 @@ namespace activation_function {
     //         probabilities[i] = probabilities[i]/summation;
     //     }
     // }
-    
 }
 
