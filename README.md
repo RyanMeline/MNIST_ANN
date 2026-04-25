@@ -26,3 +26,25 @@ The binary will be specified in the output message of CMake<br>
 Default for me was /build/Debug/
 
 ---
+
+## Results
+2 Hidden Layers:
+```
+    network.add_layer(784, 128, relu, relu_back);
+    network.add_layer(128, 64, relu, relu_back);
+    network.add_layer(64, 10, softmax);
+```
+learning_rate       Accuracy<br>
+0.001               97.88% [20 epochs]
+
+---
+
+3 Hidden Layers:
+```
+    network.add_layer(784, 256, relu, relu_back);
+    network.add_layer(256, 128, relu, relu_back);
+    network.add_layer(128, 64, relu, relu_back);
+    network.add_layer(64, 10, softmax);
+```
+learning_rate       20 epoch success<br>
+0.001               97.96% [17 epochs]
