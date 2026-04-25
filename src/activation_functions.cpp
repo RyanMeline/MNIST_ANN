@@ -10,6 +10,16 @@ namespace activation_function {
         return x > 0.0f ? 1.0f : 0.0f;
     }
 
+    Eigen::VectorXf relu(Eigen::VectorXf input) {
+        return input.array().max(0.0f);
+    }
+
+    //back prop
+    Eigen::VectorXf relu_back(Eigen::VectorXf input) {
+        //unaryExpr applies the passed in function or whatever it is to each element in the array
+        return input.array().unaryExpr([](float x) { return x > 0.0f ? 1.0f : 0.0f; });
+    }
+
     // Equation:
     //  S(y_i) = (e^{y_i}) / sum(e^{y})
 
