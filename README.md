@@ -51,3 +51,4 @@ cmake --build build --config Debug
 | learning_rate | Accuracy | Epochs |
 |---------------|----------|--------|
 | 0.001         | 97.96%   | 17     |
+| 0.005         | 98.24%   | 19     |
