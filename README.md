@@ -13,18 +13,17 @@ cmake -S . -B build
 ---
 
 ## Build project:
-From the root directory, run:
+### Release (faster)
 ```
-cmake --build build
-```
-Or from /build/ run:
-```
-cmake --build .
+cmake --build build --config Release
+.\build\Release\mnist_ann.exe
 ```
 
-The binary will be specified in the output message of CMake<br>
-Default for me was /build/Debug/
-
+### Debug (slower)
+```
+cmake --build build --config Debug
+.\build\Debug\mnist_ann.exe
+```
 ---
 
 ## Results
