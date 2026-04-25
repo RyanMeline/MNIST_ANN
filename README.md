@@ -34,8 +34,9 @@ Default for me was /build/Debug/
     network.add_layer(128, 64, relu, relu_back);
     network.add_layer(64, 10, softmax);
 ```
-learning_rate       Accuracy<br>
-0.001               97.88% [20 epochs]
+| learning_rate | Accuracy | Epochs |
+|---------------|----------|--------|
+| 0.001         | 97.88%   | 20     |
 
 ---
 
@@ -46,5 +47,6 @@ learning_rate       Accuracy<br>
     network.add_layer(128, 64, relu, relu_back);
     network.add_layer(64, 10, softmax);
 ```
-learning_rate       20 epoch success<br>
-0.001               97.96% [17 epochs]
+| learning_rate | Accuracy | Epochs |
+|---------------|----------|--------|
+| 0.001         | 97.96%   | 17     |
