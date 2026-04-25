@@ -8,11 +8,13 @@ git submodule update --init
 ```
 Initial build file configuration:
 ```
-cmake -S . -B build
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
 ```
 ---
 
-## Build project:
+## Build project from Root:
 ### Release (faster)
 ```
 cmake --build build --config Release
