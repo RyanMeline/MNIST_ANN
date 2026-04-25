@@ -4,6 +4,7 @@
 
 class Network {
     public:
+        Network() {};
         void add_layer(int inputs, int outputs,
                     std::function<Eigen::VectorXf(const Eigen::VectorXf&)> act,
                     std::function<Eigen::VectorXf(const Eigen::VectorXf&)> act_derivative
