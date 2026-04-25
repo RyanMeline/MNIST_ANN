@@ -31,7 +31,7 @@ Eigen::VectorXf Layer::forward(const Eigen::VectorXf& input) {
 }
 
 Eigen::VectorXf Layer::backward(const Eigen::VectorXf& gradient, float learning_rate) {
-    Eigen::VectorXf dLdz = gradient.array() * activation_derivative(z).array(); //Make the activation derivative function
+    Eigen::VectorXf dLdz = gradient.array() * activation_derivative(z).array();
     Eigen::MatrixXf dLdW = dLdz.matrix() * x.matrix().transpose(); //outer product, flips the x matrix
     Eigen::VectorXf dLdb = dLdz.matrix();
     Eigen::VectorXf dLdx = W.transpose() * dLdz.matrix();
