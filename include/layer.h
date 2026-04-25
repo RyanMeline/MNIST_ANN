@@ -1,7 +1,6 @@
 #pragma once
 #include <Eigen/Dense>
 #include <functional>
-#include <vector>
 
 class Layer {
     public:
