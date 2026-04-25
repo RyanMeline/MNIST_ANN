@@ -48,6 +48,7 @@ namespace activation_function {
     //     for(int i = 0; i < input_size; i++) {
     //         probabilities[i] = probabilities[i]/summation;
     //     }
+    //     return probabilities;
     // }
 }
 
