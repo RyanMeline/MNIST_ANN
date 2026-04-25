@@ -1,13 +1,14 @@
 #pragma once
 #include <Eigen/Dense>
 #include <functional>
+#include <iostream>
 
 class Layer {
     public:
         Layer(int inputs, int outputs, 
               std::function<Eigen::VectorXf(const Eigen::VectorXf&)> act,
               std::function<Eigen::VectorXf(const Eigen::VectorXf&)> act_derivative 
-                = [](const Eigen::VectorXf& x) { return x; }); //set a default for output layer (might be an issue since it could just square everything, might need to just return 1)
+                = [](const Eigen::VectorXf& x) { return Eigen::VectorXf::Ones(x.size()); }); //set a default for output layer (might be an issue since it could just square everything, might need to just return 1)
         Eigen::VectorXf forward(const Eigen::VectorXf& input);
         Eigen::VectorXf backward(const Eigen::VectorXf& gradient, float learning_rate);
 
