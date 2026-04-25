@@ -58,7 +58,7 @@ int main() {
     network.add_layer(128, 64, relu, relu_back);
     network.add_layer(64, 10, softmax);
 
-    float learning_rate = 0.001f;
+    float learning_rate = 0.005f;
     int epochs = 20;
 
     for(int i = 1; i <= epochs; i++) {
