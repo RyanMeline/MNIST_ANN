@@ -27,8 +27,6 @@ namespace load_data {
         std::ifstream file(path, std::ios::binary);
         if(!file.is_open()) std::cerr << "Failed to open file\n";
         else {
-
-
             uint32_t magic_num = 0;
             uint32_t num_images = 0;
             uint32_t rows = 0;
