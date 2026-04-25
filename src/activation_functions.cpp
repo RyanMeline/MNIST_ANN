@@ -24,15 +24,10 @@ namespace activation_function {
     //  S(y_i) = (e^{y_i}) / sum(e^{y})
 
     Eigen::VectorXf softmax(const Eigen::VectorXf& input) {
-        //Shift all inputs so that 0 is the biggest number (e^0 = 1 | e^{-x} = small number)
-        //Stops exploding nums
-        Eigen::VectorXf shifted = input.array() - input.maxCoeff();
-
-        //Raises e^x
-        Eigen::VectorXf e = shifted.array().exp();
-
-        //Divides each variable by the sum of all
-        return e / e.sum();
+        //Shift all inputs so that 0 is the biggest number (e^0 = 1 | e^{-x} = small number)  
+        Eigen::VectorXf shifted = input.array() - input.maxCoeff(); //Stops exploding nums
+        Eigen::VectorXf e = shifted.array().exp(); //Raises e^x  
+        return e / e.sum(); //Divides each variable by the sum of all
     }
     //                  SOFTMAX WITHOUT EIGEN
     // std::vector<float> softmax(std::vector<float>& input) {
