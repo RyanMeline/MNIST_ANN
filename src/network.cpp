@@ -25,7 +25,7 @@ Eigen::VectorXf Network::forward(const Eigen::VectorXf& input) {
 //  Input <- Hidden <- Output
 void Network::backward(const Eigen::VectorXf& gradient, float learning_rate) {
     Eigen::VectorXf temp = gradient;
-    for(size_t i = layers.size()-1; i >= 0; i--) {
+    for(int i = static_cast<int>(layers.size())-1; i >= 0; i--) {
         temp = layers[i].backward(temp, learning_rate);
     }
 }
@@ -49,6 +49,8 @@ float Network::eval(const std::vector<Eigen::VectorXf>& images, const std::vecto
     int correct = 0;
     for(size_t i = 0; i < labels.size(); i++){
         if(predict(images[i]) == static_cast<int>(labels[i])) correct++;
+        if((i+1)%1000 == 0) { std::cout << "\r Testing Images: [" << i+1 << "/" << images.size() << "]"; }
     }
+    std::cout << std::endl;
     return static_cast<float>(correct) / static_cast<float>(labels.size());
 }
