@@ -4,11 +4,11 @@ namespace load_data {
 
     Dataset read_input(const std::string& images_path, const std::string& labels_path) {
         Dataset data;
-        std::cout << " |- Loading Images\n";
+        std::cout << "  |- Loading Images\n";
         data.images = read_images(images_path);
-        std::cout << " |- Loading Labels\n";
+        std::cout << "  |- Loading Labels\n";
         data.labels = read_labels(labels_path);
-        std::cout << " |- File loaded\n\n";
+        std::cout << "  End of File\n\n";
         return data;
     }
 
@@ -62,7 +62,7 @@ namespace load_data {
                 }
                 images.push_back(image);
             }
-            std::cout << " |- " << num_images << " Images loaded\n";
+            std::cout << "  |- " << num_images << " Images loaded\n";
         }
 
         return images;
@@ -97,7 +97,7 @@ namespace load_data {
             file.read((char*)labels.data(), num_labels);
             if(!file.good()) { std::cerr << "Error reading file\n"; return labels; }
             
-            std::cout << " |- " << num_labels << " Labels loaded\n";
+            std::cout << "  |- " << num_labels << " Labels loaded\n";
         }
         return labels;
     }
