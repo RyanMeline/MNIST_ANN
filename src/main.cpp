@@ -42,11 +42,11 @@ int main() {
                                                    
                                                    
     std::cout << "Loading training data set\n";
-    //load_data::Dataset train_data = load_data::read_input(train_data_path, train_label_path);
+    load_data::Dataset train_data = load_data::read_input(train_data_path, train_label_path);
     // std::cout << "\nLabel: " << (int)train_data.labels[0];
     // print_image(train_data.images[0]);
     std::cout << "Loading test data set\n";
-    //load_data::Dataset test_data = load_data::read_input(test_data_path, test_label_path);
+    load_data::Dataset test_data = load_data::read_input(test_data_path, test_label_path);
     // std::cout << "\nLabel: " << (int)test_data.labels[0];
     // print_image(test_data.images[0]);
 
