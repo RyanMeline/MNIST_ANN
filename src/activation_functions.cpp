@@ -1,21 +1,21 @@
 #include "../include/activation_functions.h"
 
 namespace activation_function {
-    float relu(float x) {
-        return(std::max(0.0f, x));
-    }
+    // float relu(float x) {
+    //     return(std::max(0.0f, x));
+    // }
 
-    //For back prop
-    float relu_back(float x) {
-        return x > 0.0f ? 1.0f : 0.0f;
-    }
+    // //For back prop
+    // float relu_back(float x) {
+    //     return x > 0.0f ? 1.0f : 0.0f;
+    // }
 
-    Eigen::VectorXf relu(Eigen::VectorXf input) {
+    Eigen::VectorXf relu(const Eigen::VectorXf& input) {
         return input.array().max(0.0f);
     }
 
     //back prop
-    Eigen::VectorXf relu_back(Eigen::VectorXf input) {
+    Eigen::VectorXf relu_back(const Eigen::VectorXf& input) {
         //unaryExpr applies the passed in function or whatever it is to each element in the array
         return input.array().unaryExpr([](float x) { return x > 0.0f ? 1.0f : 0.0f; });
     }
