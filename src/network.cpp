@@ -54,3 +54,13 @@ float Network::eval(const std::vector<Eigen::VectorXf>& images, const std::vecto
     std::cout << std::endl;
     return static_cast<float>(correct) / static_cast<float>(labels.size());
 }
+
+void Network::train_all(const std::vector<Eigen::VectorXf>& images, const std::vector<uint8_t>& labels, const std::vector<int>& index, float learning_rate) {
+    for(size_t j = 0; j < images.size(); j++) {
+        train(images[index[j]], labels[index[j]], learning_rate);
+
+        if((j+1)%100 == 0) {
+            std::cout << "\r Training Images: [" << j+1 << "/" << images.size() << "]";
+        }
+    }
+}
