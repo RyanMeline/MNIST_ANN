@@ -15,6 +15,11 @@ class Network {
         int predict(const Eigen::VectorXf& input);
         float eval(const std::vector<Eigen::VectorXf>& images, const std::vector<uint8_t>& labels);
         void train_all(const std::vector<Eigen::VectorXf>& images, const std::vector<uint8_t>& labels, const std::vector<int>& index, float learning_rate);
+
+        //Mini batch stuff
+        void Network::train_all_batch(const std::vector<Eigen::VectorXf>& images, const std::vector<uint8_t>& labels, const std::vector<int>& index, float learning_rate, int batch_size = 32);
+        void Network::train_batch(const Eigen::VectorXf& input, uint8_t label, float learning_rate, int batch_size);
+        void Network::backward_batch(const Eigen::VectorXf& gradient);
     private:
         std::vector<Layer> layers;
 };

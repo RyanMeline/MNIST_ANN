@@ -12,11 +12,21 @@ class Layer {
         Eigen::VectorXf forward(const Eigen::VectorXf& input);
         Eigen::VectorXf backward(const Eigen::VectorXf& gradient, float learning_rate);
 
+        Eigen::VectorXf backward_batch(const Eigen::VectorXf& gradient);
+        void clear_weights(); //used to clear out weights between batches
+        void update_weights(float learning_rate, int batch_size); //applies weights after each batch
+
     private:
         Eigen::MatrixXf W; //weights
         Eigen::VectorXf b; //biases
         Eigen::VectorXf x; //stored input
         Eigen::VectorXf z; //stored pre-activation
+
+        //Used to store weight changes over the batch
+        Eigen::MatrixXf dLdW_batch;
+        Eigen::VectorXf dLdb_batch;
+
         std::function<Eigen::VectorXf(const Eigen::VectorXf&)> activation;
         std::function<Eigen::VectorXf(const Eigen::VectorXf&)> activation_derivative;
+
 };

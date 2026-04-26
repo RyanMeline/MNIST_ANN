@@ -64,3 +64,52 @@ void Network::train_all(const std::vector<Eigen::VectorXf>& images, const std::v
         }
     }
 }
+
+//////////////////////////////////////////////////
+//                                              //
+//                  Mini-Batch                  //
+//                                              //
+//////////////////////////////////////////////////
+
+void Network::train_all_batch(const std::vector<Eigen::VectorXf>& images, const std::vector<uint8_t>& labels, const std::vector<int>& index, float learning_rate, int batch_size) {
+    for(size_t i = 0; i < images.size(); i++) {
+        train_batch(images[index[i]], labels[index[i]], learning_rate, batch_size);
+
+        if((i+1)%100 == 0) {
+            std::cout << "\r Training Images: [" << i+1 << "/" << images.size() << "]";
+        }
+
+        //At the end of each batch, and at the end
+        //i + 1 because if indended batch size is 32, but we start at 0, then when i == 31, that would be the 32nd image
+        if((i+1)%batch_size == 0 || (i+1) == images.size()) {
+            for(auto& x : layers) {
+                x.update_weights(learning_rate, batch_size);
+                x.clear_weights();
+            }
+        }
+    }
+
+    //do the same as train_all
+    //but call the backwards_batch
+    //and when images.size()%batch_size == 0, call update_weights and clear_weights on the layer
+    //backwards_batch should be basically the exact same as Network::backward, but calling Layer::backward_batch where weights arent updates. so updates need to happen here
+}
+
+void Network::train_batch(const Eigen::VectorXf& input, uint8_t label, float learning_rate, int batch_size) {
+//loop through
+//call the t
+    Eigen::VectorXf prediction = forward(input);
+    Eigen::VectorXf true_label(10); //size 0-9
+    true_label.setZero(); //set all to 0
+    true_label[label] = 1; //set label index to 1
+    backward_batch(prediction - true_label); 
+}
+
+void Network::backward_batch(const Eigen::VectorXf& gradient) {
+    Eigen::VectorXf temp = gradient;
+    for(int i = static_cast<int>(layers.size())-1; i >= 0; i--) {
+        temp = layers[i].backward_batch(temp);
+    }
+}
+
+//in backwards_batch, call it 32 times, then call update_weights followed by clear_weights

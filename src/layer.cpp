@@ -22,6 +22,8 @@ Layer::Layer(int inputs, int outputs,
         //He initilization for ReLU
     W = (Eigen::MatrixXf::Random(outputs, inputs) * std::sqrt(2.0f / inputs));
     b = Eigen::VectorXf::Zero(outputs);
+    dLdW_batch = Eigen::MatrixXf::Zero(outputs, inputs);
+    dLdb_batch = Eigen::VectorXf::Zero(outputs);
 }
 
 Eigen::VectorXf Layer::forward(const Eigen::VectorXf& input) {
@@ -41,4 +43,27 @@ Eigen::VectorXf Layer::backward(const Eigen::VectorXf& gradient, float learning_
     b = b - learning_rate * dLdb;
 
     return dLdx;
+}
+
+Eigen::VectorXf Layer::backward_batch(const Eigen::VectorXf& gradient) {
+    Eigen::VectorXf dLdz = gradient.array() * activation_derivative(z).array();
+    Eigen::MatrixXf dLdW = dLdz.matrix() * x.matrix().transpose(); //outer product, flips the x matrix
+    Eigen::VectorXf dLdb = dLdz.matrix();
+    Eigen::VectorXf dLdx = W.transpose() * dLdz.matrix();
+
+    //Add to the things
+    dLdW_batch += dLdW;
+    dLdb_batch += dLdb;
+
+    return dLdx;
+}
+
+void Layer::update_weights(float learning_rate, int batch_size) {
+    W = W - (learning_rate / batch_size) * dLdW_batch;
+    b = b - (learning_rate / batch_size) * dLdb_batch;
+}
+
+void Layer::clear_weights() {
+    dLdW_batch.setZero(); //might need to .array().setZero(); not sure
+    dLdb_batch.setZero();
 }
