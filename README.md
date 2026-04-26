@@ -28,7 +28,9 @@ cmake --build build --config Debug
 ```
 ---
 
-## Results
+# Test Results
+
+## Hidden Layers
 2 Hidden Layers:
 ```
     network.add_layer(784, 128, relu, relu_back);
@@ -56,7 +58,7 @@ cmake --build build --config Debug
 
 ---
 
-### Shuffling training data
+## Shuffling training data
 3 Hidden Layers:
 ```
 std::vector<int> index(train_data.images.size());
@@ -75,17 +77,56 @@ std::shuffle(index.begin(), index.end(), std::mt19937{std::random_device{}()});
 
 ---
 
-### Learning Rate Scheduler
+## Learning Rate Scheduler
 With Data Shuffling and 3 Hidden Layers<br>
 Step Decay:
 ```
 if(i % 5 == 0) learning_rate *= decay_rate;
 ```
+| learning_rate | decay rate | Accuracy | Epochs |
+|---------------|------------|----------|--------|
+| 0.01          | 0.1        | 98.42%   | 13     |
+| 0.01          | 0.5        | 98.44%   | 10     |
+| 0.01          | 0.5        | 98.46%   | 15     |
+| 0.01          | 0.25       | 98.56%   | 11     |
+| 0.01          | 0.75       | 98.57%   | 18     |
+| 0.01          | 0.75       | 98.67%   | 15     |
+
+Cosine Annealing:
+```
+learning_rate = min_lr + 0.5*(max_lr - min_lr) * (1 + cos(epoch/max_epochs * pi))
+```
 | learning_rate | decay rate |Accuracy | Epochs |
 |---------------|------------|---------|--------|
-| 0.01          | 0.1        | 98.42%  | 13     |
-| 0.01          | 0.5        | 98.44%  | 10     |
-| 0.01          | 0.5        | 98.46%  | 15     |
-| 0.01          | 0.25       | 98.56%  | 11     |
-| 0.01          | 0.75       | 98.57%  | 18     |
-| 0.01          | 0.75       | 98.67%  | 15     |
+| -             | -          | -       | -      |
+
+## Mini batch
+
+Added altered version of the basic functions that only update weights after the batch is finished, updating with:
+```
+void Layer::update_weights(float learning_rate, int batch_size) {
+    W = W - (learning_rate / batch_size) * dLdW_batch;
+    b = b - (learning_rate / batch_size) * dLdb_batch;
+}
+```
+| learning_rate | decay rate | batch_size | Accuracy | Epochs |
+|---------------|------------|------------|----------|--------|
+| 0.1           | -          | 32         | 98.54%   | 19     |
+| 0.1           | 0.8        | 32         | 98.37%   | 17     |
+| 0.05          | 0.8        | 10         | 98.47%   | 14     |
+
+## Messing with Hidden Layers
+Back to original 2 hidden layers
+| learning_rate | decay rate | batch_size | Accuracy | Epochs |
+|---------------|------------|------------|----------|--------|
+| 0.1           | 0.5        | 32         | 98.05%   | 13     |
+
+Widening hidden layers
+```
+    network.add_layer(784, 256, relu, relu_back);
+    network.add_layer(256, 256, relu, relu_back);
+    network.add_layer(256, 10, softmax);
+```
+| learning_rate | decay rate | batch_size | Accuracy | Epochs |
+|---------------|------------|------------|----------|--------|
+| 0.1           | 0.5        | 32         | 98.28%   | 19     |
