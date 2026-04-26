@@ -16,19 +16,18 @@ const std::string train_label_path = "data/mnist/train-labels.idx1-ubyte";
 const std::string test_data_path = "data/mnist/t10k-images.idx3-ubyte";
 const std::string test_label_path = "data/mnist/t10k-labels.idx1-ubyte";
 
-//For testing
-void print_image(const Eigen::VectorXf& image) {
-    for(int i = 0; i < 28; i++) {
-        for(int j = 0; j < 28; j++) {
-            float pixel = image(i * 28 + j);
-            if(pixel > 0.75f)      std::cout << "@";
-            else if(pixel > 0.5f)  std::cout << "#";
-            else if(pixel > 0.25f) std::cout << ".";
-            else                   std::cout << " ";
-        }
-        std::cout << "\n";
+float step_learning_rate(float learning_rate, float decay_rate, int epoch) {
+    if(epoch % 5 == 0) {  //Learning Rate Scheduler
+        learning_rate *= decay_rate;
+        std::cout << "New Learning Rate: " << learning_rate << "\n"; 
     }
+    return learning_rate;
 }
+
+float cosine_learning_rate(float learning_rate, float) {
+    return 0;
+}
+
 
 using namespace::activation_function;
 
@@ -59,7 +58,7 @@ int main() {
     network.add_layer(64, 10, softmax);
 
     float learning_rate = 0.01f;
-    float decay_rate = 0.1f;
+    float decay_rate = 0.75f;
     std::cout << "Starting Learning rate: " << learning_rate << "\n\n";
     int epochs = 20;
 
@@ -72,18 +71,9 @@ int main() {
 
         std::shuffle(index.begin(), index.end(), std::mt19937{std::random_device{}()}); //randomizes indecies each epoch
 
-        if(i % 5 == 0) {  //Learning Rate Scheduler
-            learning_rate *= decay_rate;
-            std::cout << "New Learning Rate: " << learning_rate << "\n"; 
-        }
+        learning_rate = step_learning_rate(learning_rate, decay_rate, i);
 
-        for(size_t j = 0; j < train_data.images.size(); j++) {
-            network.train(train_data.images[index[j]], train_data.labels[index[j]], learning_rate);
-
-            if((j+1)%100 == 0) {
-                std::cout << "\r Training Images: [" << j+1 << "/" << train_data.images.size() << "]";
-            }
-        }
+        network.train_all(train_data.images, train_data.labels, index, learning_rate);
         std::cout << std::endl;
         float accuracy = network.eval(test_data.images, test_data.labels) * 100;
         std::cout << "Accuracy: " << accuracy << "%\n\n";
