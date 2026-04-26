@@ -16,9 +16,9 @@ const std::string train_label_path = "data/mnist/train-labels.idx1-ubyte";
 const std::string test_data_path = "data/mnist/t10k-images.idx3-ubyte";
 const std::string test_label_path = "data/mnist/t10k-labels.idx1-ubyte";
 
-float step_learning_rate(float learning_rate, float decay_rate, int epoch) {
-    if(epoch % 5 == 0) {  //Learning Rate Scheduler
-        learning_rate *= decay_rate;
+float step_learning_rate(float learning_rate, float decay_rate, float min_learning_rate, int epochs_per_decay, int epoch) {
+    if(epoch % epochs_per_decay == 0) {  //Learning Rate Scheduler
+        learning_rate = std::max(min_learning_rate, learning_rate * decay_rate);
         std::cout << "New Learning Rate: " << learning_rate << "\n"; 
     }
     return learning_rate;
@@ -57,10 +57,14 @@ int main() {
     network.add_layer(128, 64, relu, relu_back);
     network.add_layer(64, 10, softmax);
 
-    float learning_rate = 0.01f;
-    float decay_rate = 0.75f;
-    std::cout << "Starting Learning rate: " << learning_rate << "\n\n";
+    float learning_rate = 0.1f;
+    float decay_rate = 0.5f;
+    float min_learning_rate = 0.0001f;
+    int epochs_per_decay = 5;
+    int batch_size = 32;
     int epochs = 20;
+    
+    std::cout << "Starting Learning rate: " << learning_rate << "\n\n";
 
     //For shuffling the training data (need to shuffle indicies rather than the items themselves because labels and images need to stay together)
     std::vector<int> index(train_data.images.size());
@@ -71,9 +75,9 @@ int main() {
 
         std::shuffle(index.begin(), index.end(), std::mt19937{std::random_device{}()}); //randomizes indecies each epoch
 
-        learning_rate = step_learning_rate(learning_rate, decay_rate, i);
+        learning_rate = step_learning_rate(learning_rate, decay_rate, min_learning_rate, epochs_per_decay, i);
 
-        network.train_all(train_data.images, train_data.labels, index, learning_rate);
+        network.train_all_batch(train_data.images, train_data.labels, index, learning_rate, batch_size);
         std::cout << std::endl;
         float accuracy = network.eval(test_data.images, test_data.labels) * 100;
         std::cout << "Accuracy: " << accuracy << "%\n\n";
