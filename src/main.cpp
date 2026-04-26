@@ -2,6 +2,10 @@
 
 #include <Eigen/Dense>
 
+#include <numeric>
+#include <algorithm>
+#include <random>
+
 #include "../include/activation_functions.h"
 #include "../include/layer.h"
 #include "../include/mnist_loader.h"
@@ -27,10 +31,6 @@ void print_image(const Eigen::VectorXf& image) {
 }
 
 using namespace::activation_function;
-
-void runModel() {
-
-}
 
 int main() {
     std::cout <<"\n" <<
@@ -58,13 +58,27 @@ int main() {
     network.add_layer(128, 64, relu, relu_back);
     network.add_layer(64, 10, softmax);
 
-    float learning_rate = 0.005f;
+    float learning_rate = 0.01f;
+    float decay_rate = 0.1f;
+    std::cout << "Starting Learning rate: " << learning_rate << "\n\n";
     int epochs = 20;
+
+    //For shuffling the training data (need to shuffle indicies rather than the items themselves because labels and images need to stay together)
+    std::vector<int> index(train_data.images.size());
+    std::iota(index.begin(), index.end(), 0); //fills indecies
 
     for(int i = 1; i <= epochs; i++) {
         std::cout << "Epoch [" << i << "/" << epochs << "]\n"; 
+
+        std::shuffle(index.begin(), index.end(), std::mt19937{std::random_device{}()}); //randomizes indecies each epoch
+
+        if(i % 5 == 0) {  //Learning Rate Scheduler
+            learning_rate *= decay_rate;
+            std::cout << "New Learning Rate: " << learning_rate << "\n"; 
+        }
+
         for(size_t j = 0; j < train_data.images.size(); j++) {
-            network.train(train_data.images[j], train_data.labels[j], learning_rate);
+            network.train(train_data.images[index[j]], train_data.labels[index[j]], learning_rate);
 
             if((j+1)%100 == 0) {
                 std::cout << "\r Training Images: [" << j+1 << "/" << train_data.images.size() << "]";
