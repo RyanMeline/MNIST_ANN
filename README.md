@@ -81,7 +81,7 @@ std::shuffle(index.begin(), index.end(), std::mt19937{std::random_device{}()});
 With Data Shuffling and 3 Hidden Layers<br>
 Step Decay:
 ```
-if(i % 5 == 0) learning_rate *= decay_rate;
+if(i % dacay_per_epoch == 0) learning_rate *= decay_rate;
 ```
 | learning_rate | decay rate | Accuracy | Epochs |
 |---------------|------------|----------|--------|
