@@ -100,6 +100,8 @@ learning_rate = min_lr + 0.5*(max_lr - min_lr) * (1 + cos(epoch/max_epochs * pi)
 |---------------|------------|---------|--------|
 | -             | -          | -       | -      |
 
+---
+
 ## Mini batch
 
 Added altered version of the basic functions that only update weights after the batch is finished, updating with:
@@ -114,6 +116,8 @@ void Layer::update_weights(float learning_rate, int batch_size) {
 | 0.1           | -          | 32         | 98.54%   | 19     |
 | 0.1           | 0.8        | 32         | 98.37%   | 17     |
 | 0.05          | 0.8        | 10         | 98.47%   | 14     |
+
+---
 
 ## Messing with Hidden Layers
 Back to original 2 hidden layers
