@@ -52,12 +52,15 @@ int main() {
     load_data::Dataset test_data = load_data::read_input(test_data_path, test_label_path);
 
     Network network;
-    //network.add_layer(784, 256, relu, relu_back);
+
     network.add_layer(784, 256, relu, relu_back);
-    
-    //network.add_layer(256, 128, relu, relu_back);
-    network.add_layer(256, 256, relu, relu_back);
-    network.add_layer(256, 10, softmax);
+    network.add_layer(256, 128, relu, relu_back);
+    network.add_layer(128, 64, relu, relu_back);
+    network.add_layer(64, 10, softmax);
+
+    // network.add_layer(784, 256, relu, relu_back);
+    // network.add_layer(256, 256, relu, relu_back);
+    // network.add_layer(256, 10, softmax);
 
     float learning_rate = 0.1f;
     float decay_rate = 0.5f;
