@@ -15,6 +15,10 @@ const std::string train_data_path = "data/mnist/train-images.idx3-ubyte";
 const std::string train_label_path = "data/mnist/train-labels.idx1-ubyte";
 const std::string test_data_path = "data/mnist/t10k-images.idx3-ubyte";
 const std::string test_label_path = "data/mnist/t10k-labels.idx1-ubyte";
+const std::string usps_data = "data/usps/usps_images.bin";
+const std::string usps_labels = "data/usps/usps_labels.bin";
+const std::string usps_test_data = "data/usps/usps_t_images.bin";
+const std::string usps_test_labels = "data/usps/usps_t_labels.bin";
 
 float step_learning_rate(float learning_rate, float decay_rate, float min_learning_rate, int epochs_per_decay, int epoch) {
     if(epoch % epochs_per_decay == 0) {  //Learning Rate Scheduler
@@ -26,6 +30,19 @@ float step_learning_rate(float learning_rate, float decay_rate, float min_learni
 
 float cosine_learning_rate(float learning_rate, float) {
     return 0;
+}
+
+void print_image(const Eigen::VectorXf& image) {
+    for(int i = 0; i < 28; i++) {
+        for(int j = 0; j < 28; j++) {
+            float pixel = image(i * 28 + j);
+            if(pixel > 0.75f)      std::cout << "@";
+            else if(pixel > 0.5f)  std::cout << "#";
+            else if(pixel > 0.25f) std::cout << ".";
+            else                   std::cout << " ";
+        }
+        std::cout << "\n";
+    }
 }
 
 
@@ -48,8 +65,11 @@ int main() {
     std::cout << "Loading training data set\n";
     load_data::Dataset train_data = load_data::read_input(train_data_path, train_label_path);
 
+    std::cout << "Loading validation data set\n";
+    load_data::Dataset validation_data = load_data::read_input(test_data_path, test_label_path);
+
     std::cout << "Loading test data set\n";
-    load_data::Dataset test_data = load_data::read_input(test_data_path, test_label_path);
+    load_data::Dataset test_data = load_data::read_input(usps_data, usps_labels);
 
     Network network;
 
@@ -62,18 +82,20 @@ int main() {
     // network.add_layer(256, 256, relu, relu_back);
     // network.add_layer(256, 10, softmax);
 
-    float learning_rate = 0.1f;
-    float decay_rate = 0.5f;
+    float learning_rate = 0.01f; //0.1
+    float decay_rate = 0.75f; //0.5
     float min_learning_rate = 0.0001f;
     int epochs_per_decay = 5;
-    int batch_size = 32;
-    int epochs = 20;
+    int batch_size = 1; //32
+    int epochs = 15;
     
     std::cout << "Starting Learning rate: " << learning_rate << "\n\n";
 
     //For shuffling the training data (need to shuffle indicies rather than the items themselves because labels and images need to stay together)
     std::vector<int> index(train_data.images.size());
     std::iota(index.begin(), index.end(), 0); //fills indecies
+
+    float accuracy;
 
     for(int i = 1; i <= epochs; i++) {
         std::cout << "Epoch [" << i << "/" << epochs << "]\n"; 
@@ -84,9 +106,11 @@ int main() {
 
         network.train_all_batch(train_data.images, train_data.labels, index, learning_rate, batch_size);
         std::cout << std::endl;
-        float accuracy = network.eval(test_data.images, test_data.labels) * 100;
-        std::cout << "Accuracy: " << accuracy << "%\n\n";
+        accuracy = network.eval(validation_data.images, validation_data.labels) * 100;
+        std::cout << "Validation set accuracy: " << accuracy << "%\n\n";
     }
 
+    accuracy = network.eval(test_data.images, test_data.labels) * 100; 
+    std::cout << "Test set accuracy: " << accuracy <<"%\n\n";
     return 0;
 }
