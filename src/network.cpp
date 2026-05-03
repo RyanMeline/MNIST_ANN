@@ -10,10 +10,11 @@ backpropogation (chain rule walking backwards through layers)
 #include <iomanip>
 #include <fstream>
 
+
 void Network::add_layer(int inputs, int outputs, std::function<Eigen::VectorXf(const Eigen::VectorXf&)> act, std::function<Eigen::VectorXf(const Eigen::VectorXf&)> act_derivative) {
     layers.emplace_back(inputs, outputs, act, act_derivative);
 }
-//  Input -> Hidden -> Output
+
 Eigen::VectorXf Network::forward(const Eigen::VectorXf& input) {
     Eigen::VectorXf temp = input;
     for(auto& layer : layers) {
@@ -22,8 +23,6 @@ Eigen::VectorXf Network::forward(const Eigen::VectorXf& input) {
     return temp;
 }
 
-//initialize with far right, which is softmax's gradient (predicted - labeled)
-//  Input <- Hidden <- Output
 void Network::backward(const Eigen::VectorXf& gradient, float learning_rate) {
     Eigen::VectorXf temp = gradient;
     for(int i = static_cast<int>(layers.size())-1; i >= 0; i--) {
@@ -32,6 +31,7 @@ void Network::backward(const Eigen::VectorXf& gradient, float learning_rate) {
 }
 
 //Call in a loop in main to iterate through all 60k images
+
 void Network::train(const Eigen::VectorXf& input, uint8_t label, float learning_rate) {
     Eigen::VectorXf prediction = forward(input);
     Eigen::VectorXf true_label(10); //size 0-9
@@ -74,7 +74,7 @@ void Network::train_all(const std::vector<Eigen::VectorXf>& images, const std::v
 
 void Network::train_all_batch(const std::vector<Eigen::VectorXf>& images, const std::vector<uint8_t>& labels, const std::vector<int>& index, float learning_rate, int batch_size) {
     for(size_t i = 0; i < images.size(); i++) {
-        train_batch(images[index[i]], labels[index[i]], learning_rate, batch_size);
+        train_batch(images[index[i]], labels[index[i]], learning_rate);
 
         if((i+1)%100 == 0) {
             std::cout << "\r Training..... [" << i+1 << "/" << images.size() << "]";
@@ -96,9 +96,7 @@ void Network::train_all_batch(const std::vector<Eigen::VectorXf>& images, const 
     //backwards_batch should be basically the exact same as Network::backward, but calling Layer::backward_batch where weights arent updates. so updates need to happen here
 }
 
-void Network::train_batch(const Eigen::VectorXf& input, uint8_t label, float learning_rate, int batch_size) {
-//loop through
-//call the t
+void Network::train_batch(const Eigen::VectorXf& input, uint8_t label, float learning_rate) {
     Eigen::VectorXf prediction = forward(input);
     Eigen::VectorXf true_label(10); //size 0-9
     true_label.setZero(); //set all to 0
