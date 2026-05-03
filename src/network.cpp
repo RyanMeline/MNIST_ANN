@@ -112,4 +112,35 @@ void Network::backward_batch(const Eigen::VectorXf& gradient) {
     }
 }
 
-//in backwards_batch, call it 32 times, then call update_weights followed by clear_weights
+
+void printMatrix(int conf_matrix[10][10]) {
+    std::cout << "\nTest Data Set Confusion Matrix:\n\n";
+    std::cout << "   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 \n";
+    for(int i = 0; i < 10; i++) {
+        std::cout << "---|---|---|---|---|---|---|---|---|---|---\n";
+        std::cout << " " << i << " ";
+        for(int j = 0; j < 10; j++) {
+            std::cout << "| " << conf_matrix[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+}
+
+void Network::test(const std::vector<Eigen::VectorXf>& images, const std::vector<uint8_t>& labels) {
+    int correct = 0;
+    int confusion_matrix[10][10] = {}; //predicted | actual
+    for(size_t i = 0; i < labels.size(); i++){
+        int prediction = predict(images[i]);
+        if(prediction == static_cast<int>(labels[i])) correct++;
+        confusion_matrix[prediction][labels[i]]++; //labels are 0 through 9, and indexes go 0 through 9, so very nice isnt it
+        if((i+1)%1000 == 0) { std::cout << "\r Testing Images: [" << i+1 << "/" << images.size() << "]"; }
+    }
+    std::cout << "\r Testing Images: [" << images.size() << "/" << images.size() << "]";
+    std::cout << std::endl;
+    float accuracy = static_cast<float>(correct) / static_cast<float>(labels.size())*100;
+    std::cout << "Test set accuracy: " << accuracy <<"%\n\n";
+    
+    printMatrix(confusion_matrix);
+
+}
