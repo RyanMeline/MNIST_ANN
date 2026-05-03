@@ -92,16 +92,19 @@ int main() {
     load_data::Dataset test_2_data = load_data::read_input(usps_test_data, usps_test_labels); 
 
     Network network;
-    network.results_path = makeResultsDir();
+    // network.add_layer(784, 256, relu, relu_back);
+    // network.add_layer(256, 128, relu, relu_back);
+    // network.add_layer(128, 64, relu, relu_back);
+    // network.add_layer(64, 10, softmax);
 
     network.add_layer(784, 256, relu, relu_back);
-    network.add_layer(256, 128, relu, relu_back);
-    network.add_layer(128, 64, relu, relu_back);
-    network.add_layer(64, 10, softmax);
+    network.add_layer(256, 256, relu, relu_back);
+    network.add_layer(256, 10, softmax);
 
     // network.add_layer(784, 256, relu, relu_back);
-    // network.add_layer(256, 256, relu, relu_back);
     // network.add_layer(256, 10, softmax);
+
+    // network.add_layer(784, 10, softmax);
 
     float learning_rate = 0.01f; //0.1
     float decay_rate = 0.75f; //0.5
@@ -131,9 +134,11 @@ int main() {
         std::cout << "Validation accuracy: " << accuracy << "%\n\n";
     }
 
+    network.results_path = makeResultsDir();
     network.test(test_data.images, test_data.labels); 
-
-    network.results_path = makeResultsDir(); //new one  bc why not
     network.test(test_2_data.images, test_2_data.labels);
+    network.save_results();
+    // network.results_path = makeResultsDir(); //new one  bc why not
+    // network.test(test_2_data.images, test_2_data.labels);
     return 0;
 }
