@@ -134,3 +134,23 @@ Widening hidden layers
 | learning_rate | decay rate | batch_size | Accuracy | Epochs |
 |---------------|------------|------------|----------|--------|
 | 0.1           | 0.5        | 32         | 98.28%   | 19     |
+
+
+# Testing Data
+## USPS
+Results:
+
+| learning_rate | decay rate | batch_size | Accuracy | Epochs |
+|---------------|------------|------------|----------|--------|
+| 0.01          | 0.75       | 1          | 59.6352% | 15     |
+
+Changing how the images are preprocessed. Previously:<br>
+16x16 images scaled to 28x28
+
+Now:<br>
+16x16 scaled to 20x20, padding added around the edge to make a 28x28 (how MNIST makes theirs, didn't know that before just now)
+
+New Results:
+| learning_rate | decay rate | batch_size | Accuracy | Epochs |
+|---------------|------------|------------|----------|--------|
+| 0.01          | 0.75       | 1          | 97.6409% | 15     |
