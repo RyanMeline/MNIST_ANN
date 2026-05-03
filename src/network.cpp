@@ -147,20 +147,21 @@ void saveMatrixCSV(int conf_matrix[10][10], const std::string& path) {
 }
 
 void Network::test(const std::vector<Eigen::VectorXf>& images, const std::vector<uint8_t>& labels) {
-    int correct = 0;
-    int confusion_matrix[10][10] = {}; //predicted = y | actual = x
     for(size_t i = 0; i < labels.size(); i++){
         int prediction = predict(images[i]);
         if(prediction == static_cast<int>(labels[i])) correct++;
         confusion_matrix[prediction][labels[i]]++; //labels are 0 through 9, and indexes go 0 through 9, so very nice isnt it
         if((i+1)%1000 == 0) { std::cout << "\rTesting... [" << i+1 << "/" << images.size() << "]"; }
     }
-    std::cout << "\rTesting... [" << images.size() << "/" << images.size() << "]";
+    std::cout << "\rTesting... [" << images.size() << "/" << images.size() << "]\n";
+
+    total_tested += images.size();
+}
+
+void Network::save_results() {
     std::cout << std::endl;
-    float accuracy = static_cast<float>(correct) / static_cast<float>(labels.size())*100;
+    float accuracy = static_cast<float>(correct) / static_cast<float>(total_tested)*100.0f;
     std::cout << "Test accuracy: " << accuracy <<"%\n\n";
-    
     printMatrix(confusion_matrix);
     saveMatrixCSV(confusion_matrix, results_path + "/confusion_matrix.csv");
-
 }

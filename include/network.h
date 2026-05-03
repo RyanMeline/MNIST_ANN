@@ -68,10 +68,11 @@ class Network {
         void train_all(const std::vector<Eigen::VectorXf>& images, const std::vector<uint8_t>& labels, const std::vector<int>& index, float learning_rate);
         
         /*
-         * @brief Runs test data through network, creates reliability results
+         * @brief Runs test data through network, saves results to private variables
          * @param images Data set's images
          * @param labels Data set's labels
-         * @note Calls predict(), printMatrix(), saveMatrixCSV() internally
+         * @note Calls predict(), printMatrix(), saveMatrixCSV() internally. 
+         * @note Saves to confusion_matrix, correct, total_tested.
          */
         void Network::test(const std::vector<Eigen::VectorXf>& images, const std::vector<uint8_t>& labels);
 
@@ -102,10 +103,25 @@ class Network {
          * @note calls layer::backward_batch() internally
          */
         void Network::backward_batch(const Eigen::VectorXf& gradient);
+
+        /*
+         * @brief Creates results files
+        */
+        void Network::save_results();
+
         //Stores file path for results
         std::string results_path;
 
         private:
         //Vector pointing to layers
         std::vector<Layer> layers;
+
+        //Conf_matrix for storing test results, predicted = y | actual = x
+        int confusion_matrix[10][10] = {};
+
+        //Total correct from testing
+        int correct = 0;
+
+        //Total tested images
+        size_t total_tested = 0;
 };
