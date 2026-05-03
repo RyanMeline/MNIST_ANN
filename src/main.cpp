@@ -92,6 +92,7 @@ int main() {
     load_data::Dataset test_2_data = load_data::read_input(usps_test_data, usps_test_labels); 
 
     Network network;
+    network.results_path = makeResultsDir();
 
     network.add_layer(784, 256, relu, relu_back);
     network.add_layer(256, 128, relu, relu_back);
@@ -131,6 +132,8 @@ int main() {
     }
 
     network.test(test_data.images, test_data.labels); 
+
+    network.results_path = makeResultsDir(); //new one  bc why not
     network.test(test_2_data.images, test_2_data.labels);
     return 0;
 }

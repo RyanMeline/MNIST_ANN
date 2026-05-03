@@ -21,6 +21,8 @@ class Network {
         void Network::train_all_batch(const std::vector<Eigen::VectorXf>& images, const std::vector<uint8_t>& labels, const std::vector<int>& index, float learning_rate, int batch_size = 32);
         void Network::train_batch(const Eigen::VectorXf& input, uint8_t label, float learning_rate, int batch_size);
         void Network::backward_batch(const Eigen::VectorXf& gradient);
-    private:
+        std::string results_path;
+
+        private:
         std::vector<Layer> layers;
 };
