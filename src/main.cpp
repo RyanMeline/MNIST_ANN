@@ -5,6 +5,10 @@
 #include <numeric>
 #include <algorithm>
 #include <random>
+#include <filesystem>
+#include <chrono>
+#include <sstream>
+#include <iomanip>
 
 #include "../include/activation_functions.h"
 #include "../include/layer.h"
@@ -30,6 +34,19 @@ float step_learning_rate(float learning_rate, float decay_rate, float min_learni
 
 float cosine_learning_rate(float learning_rate, float) {
     return 0;
+}
+
+std::string makeResultsDir() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t t = std::chrono::system_clock::to_time_t(now);
+    std:tm* tm = std::localtime(&t);
+
+    std::ostringstream oss;
+    oss << "test_results/" << std::put_time(tm, "%Y-%m-%d_%H-%M-%S");
+
+    std::string path = oss.str();
+    std::filesystem::create_directories(path);
+    return path;
 }
 
 void print_image(const Eigen::VectorXf& image) {
@@ -68,8 +85,11 @@ int main() {
     std::cout << "Loading validation data set\n";
     load_data::Dataset validation_data = load_data::read_input(test_data_path, test_label_path);
 
-    std::cout << "Loading test data set\n";
+    std::cout << "Loading USPS data set\n";
     load_data::Dataset test_data = load_data::read_input(usps_data, usps_labels);
+
+    std::cout << "Loading USPS test data set\n";
+    load_data::Dataset test_2_data = load_data::read_input(usps_test_data, usps_test_labels); 
 
     Network network;
 
@@ -107,9 +127,10 @@ int main() {
         network.train_all_batch(train_data.images, train_data.labels, index, learning_rate, batch_size);
         std::cout << std::endl;
         accuracy = network.eval(validation_data.images, validation_data.labels) * 100;
-        std::cout << "Validation set accuracy: " << accuracy << "%\n\n";
+        std::cout << "Validation accuracy: " << accuracy << "%\n\n";
     }
 
     network.test(test_data.images, test_data.labels); 
+    network.test(test_2_data.images, test_2_data.labels);
     return 0;
 }
