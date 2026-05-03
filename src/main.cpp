@@ -110,7 +110,6 @@ int main() {
         std::cout << "Validation set accuracy: " << accuracy << "%\n\n";
     }
 
-    accuracy = network.eval(test_data.images, test_data.labels) * 100; 
-    std::cout << "Test set accuracy: " << accuracy <<"%\n\n";
+    network.test(test_data.images, test_data.labels); 
     return 0;
 }
