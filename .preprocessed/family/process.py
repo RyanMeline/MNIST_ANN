@@ -24,11 +24,15 @@ def save_mnist_format(image_file, label_file, images, labels):
             f.write(struct.pack('B', label))
 
 # --- Load and threshold ---
-img = cv2.imread("raw/DMELINE.PNG", cv2.IMREAD_GRAYSCALE)
+img = cv2.imread("raw/BMELINEnn.PNG", cv2.IMREAD_GRAYSCALE)
 _, thresh = cv2.threshold(img, 180, 255, cv2.THRESH_BINARY_INV ) # + cv2.THRESH_OTSU
 
-kernel = np.ones((1,1), np.uint8)
-thresh = cv2.dilate(thresh, kernel, iterations=1)
+# kernel = np.ones((1,1), np.uint8)
+# thresh = cv2.dilate(thresh, kernel, iterations=1)
+
+# kernel = np.ones((13,13), np.uint8)
+# thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+
 
 cv2.imwrite('debug_thresh.png', thresh)
 # --- Find digits ---
@@ -73,5 +77,5 @@ for cnt in contours:
 cv2.destroyAllWindows()
 
 # --- Save in MNIST IDX format ---
-save_mnist_format('dad_images.idx3-ubyte', 'dad_labels.idx1-ubyte', images, labels)
+save_mnist_format('mom_images.idx3-ubyte', 'mom_labels.idx1-ubyte', images, labels)
 print(f"Done — saved {len(images)} labeled digits")
