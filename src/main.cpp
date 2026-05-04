@@ -16,17 +16,21 @@
 #include "../include/mnist_loader.h"
 #include "../include/network.h"
 
-
+//Training Data
 const std::string train_data_path = "data/mnist/train-images.idx3-ubyte";
 const std::string train_label_path = "data/mnist/train-labels.idx1-ubyte";
-const std::string test_data_path = "data/mnist/t10k-images.idx3-ubyte";
-const std::string test_label_path = "data/mnist/t10k-labels.idx1-ubyte";
 
+//Validation Data
+const std::string validation_data_path = "data/mnist/t10k-images.idx3-ubyte";
+const std::string validation_label_path = "data/mnist/t10k-labels.idx1-ubyte";
+
+//USPS testing Data
 const std::string usps_data = "data/usps/usps_images.bin";
 const std::string usps_labels = "data/usps/usps_labels.bin";
 const std::string usps_test_data = "data/usps/usps_t_images.bin";
 const std::string usps_test_labels = "data/usps/usps_t_labels.bin";
 
+//Family testing Data
 const std::string dad_images = "data/family/dad_images.idx3-ubyte";
 const std::string dad_labels = "data/family/dad_labels.idx1-ubyte";
 
@@ -78,7 +82,7 @@ int main() {
     load_data::Dataset train_data = load_data::read_input(train_data_path, train_label_path);
 
     std::cout << "Loading validation data set\n";
-    load_data::Dataset validation_data = load_data::read_input(test_data_path, test_label_path);
+    load_data::Dataset validation_data = load_data::read_input(validation_data_path, validation_label_path);
 
     std::cout << "Loading USPS data set\n";
     load_data::Dataset test_data = load_data::read_input(usps_data, usps_labels);
