@@ -33,6 +33,8 @@ const std::string usps_test_labels = "data/usps/usps_t_labels.bin";
 //Family testing Data
 const std::string dad_images = "data/family/dad_images.idx3-ubyte";
 const std::string dad_labels = "data/family/dad_labels.idx1-ubyte";
+const std::string mom_images = "data/family/mom_images.idx3-ubyte";
+const std::string mom_labels = "data/family/mom_labels.idx1-ubyte";
 
 float step_learning_rate(float learning_rate, float decay_rate, float min_learning_rate, int epochs_per_decay, int epoch) {
     if(epoch % epochs_per_decay == 0) {  //Learning Rate Scheduler
@@ -93,6 +95,9 @@ int main() {
     std::cout << "Loading Dad's handwriting set\n";
     load_data::Dataset dad = load_data::read_input(dad_images, dad_labels);
 
+    std::cout << "Loading Mom's handwriting set\n";
+    load_data::Dataset mom = load_data::read_input(mom_images, mom_labels);
+
     Network network;
     network.add_layer(784, 256, relu, relu_back);
     network.add_layer(256, 256, relu, relu_back);
@@ -139,9 +144,10 @@ int main() {
     }
 
     network.results_path = make_results_directory();
-    network.test(test_data.images, test_data.labels); 
-    network.test(test_2_data.images, test_2_data.labels);
-    network.test(dad.images, dad.labels);
+    // network.test(test_data.images, test_data.labels); 
+    // network.test(test_2_data.images, test_2_data.labels);
+    // network.test(dad.images, dad.labels);
+    network.test(mom.images, mom.labels);
     network.save_results();
 
     return 0;
