@@ -10,5 +10,5 @@ build/
 # Test results
 test_results/*
 
-debug_boxes.png
-debug_thresh.png
+*/debug_boxes.png
+*/debug_thresh.png
