@@ -46,7 +46,7 @@ float cosine_learning_rate(float learning_rate, float) {
     return 0;
 }
 
-std::string makeResultsDir() {
+std::string make_results_directory() {
     auto now = std::chrono::system_clock::now();
     std::time_t t = std::chrono::system_clock::to_time_t(now);
     std:tm* tm = std::localtime(&t);
@@ -108,14 +108,14 @@ int main() {
 
     // network.add_layer(784, 10, softmax);
 
-    float learning_rate = 0.07f; //0.1
-    float decay_rate = 0.5f; //0.5
+    float learning_rate = 0.01f; //0.1
+    float decay_rate = 0.75f; //0.5
     float min_learning_rate = 0.0001f;
     int epochs_per_decay = 5;
     int batch_size = 28; //32
     int epochs = 15;
     
-    bool do_batch_train = true;
+    bool do_batch_train = false;
     
     std::cout << "Starting Learning rate: " << learning_rate << "\n\n";
 
@@ -138,9 +138,9 @@ int main() {
         std::cout << "Validation accuracy: " << accuracy << "%\n\n";
     }
 
-    network.results_path = makeResultsDir();
-    //network.test(test_data.images, test_data.labels); 
-    //network.test(test_2_data.images, test_2_data.labels);
+    network.results_path = make_results_directory();
+    network.test(test_data.images, test_data.labels); 
+    network.test(test_2_data.images, test_2_data.labels);
     network.test(dad.images, dad.labels);
     network.save_results();
 
