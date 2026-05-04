@@ -10,19 +10,25 @@
 #include <sstream>
 #include <iomanip>
 
+#include "../include/extra.h"
 #include "../include/activation_functions.h"
 #include "../include/layer.h"
 #include "../include/mnist_loader.h"
 #include "../include/network.h"
 
+
 const std::string train_data_path = "data/mnist/train-images.idx3-ubyte";
 const std::string train_label_path = "data/mnist/train-labels.idx1-ubyte";
 const std::string test_data_path = "data/mnist/t10k-images.idx3-ubyte";
 const std::string test_label_path = "data/mnist/t10k-labels.idx1-ubyte";
+
 const std::string usps_data = "data/usps/usps_images.bin";
 const std::string usps_labels = "data/usps/usps_labels.bin";
 const std::string usps_test_data = "data/usps/usps_t_images.bin";
 const std::string usps_test_labels = "data/usps/usps_t_labels.bin";
+
+const std::string dad_images = "data/family/dad_images.idx3-ubyte";
+const std::string dad_labels = "data/family/dad_labels.idx1-ubyte";
 
 float step_learning_rate(float learning_rate, float decay_rate, float min_learning_rate, int epochs_per_decay, int epoch) {
     if(epoch % epochs_per_decay == 0) {  //Learning Rate Scheduler
@@ -66,18 +72,7 @@ void print_image(const Eigen::VectorXf& image) {
 using namespace::activation_function;
 
 int main() {
-    std::cout <<"\n" <<
-    "____________________________________________________\n\n" <<
-    " /$$      /$$ /$$   /$$ /$$$$$$  /$$$$$$  /$$$$$$$$" << std::endl <<
-    "| $$$    /$$$| $$$ | $$|_  $$_/ /$$__  $$|__  $$__/" << std::endl <<
-    "| $$$$  /$$$$| $$$$| $$  | $$  | $$  \\__/   | $$   " << std::endl <<
-    "| $$ $$/$$ $$| $$ $$ $$  | $$  |  $$$$$$    | $$   " << std::endl <<
-    "| $$  $$$| $$| $$  $$$$  | $$   \\____  $$   | $$   " << std::endl <<
-    "| $$\\  $ | $$| $$\\  $$$  | $$   /$$  \\ $$   | $$   " << std::endl <<
-    "| $$ \\/  | $$| $$ \\  $$ /$$$$$$|  $$$$$$/   | $$   " << std::endl <<
-    "|__/     |__/|__/  \\__/|______/ \\______/    |__/   " << std::endl <<
-    "____________________________________________________\n\n";
-                                                   
+    printLogo();                                                   
                                                                                             
     std::cout << "Loading training data set\n";
     load_data::Dataset train_data = load_data::read_input(train_data_path, train_label_path);
@@ -91,35 +86,38 @@ int main() {
     std::cout << "Loading USPS test data set\n";
     load_data::Dataset test_2_data = load_data::read_input(usps_test_data, usps_test_labels); 
 
-    Network network;
-    // network.add_layer(784, 256, relu, relu_back);
-    // network.add_layer(256, 128, relu, relu_back);
-    // network.add_layer(128, 64, relu, relu_back);
-    // network.add_layer(64, 10, softmax);
+    std::cout << "Loading Dad's handwriting set\n";
+    load_data::Dataset dad = load_data::read_input(dad_images, dad_labels);
 
+    Network network;
     network.add_layer(784, 256, relu, relu_back);
     network.add_layer(256, 256, relu, relu_back);
-    network.add_layer(256, 10, softmax);
+    network.add_layer(256, 64, relu, relu_back);
+    network.add_layer(64, 10, softmax);
+
+    // network.add_layer(784, 256, relu, relu_back);
+    // network.add_layer(256, 256, relu, relu_back);
+    // network.add_layer(256, 10, softmax);
 
     // network.add_layer(784, 256, relu, relu_back);
     // network.add_layer(256, 10, softmax);
 
     // network.add_layer(784, 10, softmax);
 
-    float learning_rate = 0.01f; //0.1
-    float decay_rate = 0.75f; //0.5
+    float learning_rate = 0.07f; //0.1
+    float decay_rate = 0.5f; //0.5
     float min_learning_rate = 0.0001f;
     int epochs_per_decay = 5;
-    int batch_size = 1; //32
+    int batch_size = 28; //32
     int epochs = 15;
+    
+    bool do_batch_train = true;
     
     std::cout << "Starting Learning rate: " << learning_rate << "\n\n";
 
     //For shuffling the training data (need to shuffle indicies rather than the items themselves because labels and images need to stay together)
     std::vector<int> index(train_data.images.size());
     std::iota(index.begin(), index.end(), 0); //fills indecies
-
-    float accuracy;
 
     for(int i = 1; i <= epochs; i++) {
         std::cout << "Epoch [" << i << "/" << epochs << "]\n"; 
@@ -128,17 +126,19 @@ int main() {
 
         learning_rate = step_learning_rate(learning_rate, decay_rate, min_learning_rate, epochs_per_decay, i);
 
-        network.train_all_batch(train_data.images, train_data.labels, index, learning_rate, batch_size);
+        if(do_batch_train) network.train_all_batch(train_data.images, train_data.labels, index, learning_rate, batch_size);
+        else network.train_all(train_data.images, train_data.labels, index, learning_rate);
+        
         std::cout << std::endl;
-        accuracy = network.eval(validation_data.images, validation_data.labels) * 100;
+        float accuracy = network.eval(validation_data.images, validation_data.labels) * 100;
         std::cout << "Validation accuracy: " << accuracy << "%\n\n";
     }
 
     network.results_path = makeResultsDir();
-    network.test(test_data.images, test_data.labels); 
-    network.test(test_2_data.images, test_2_data.labels);
+    //network.test(test_data.images, test_data.labels); 
+    //network.test(test_2_data.images, test_2_data.labels);
+    network.test(dad.images, dad.labels);
     network.save_results();
-    // network.results_path = makeResultsDir(); //new one  bc why not
-    // network.test(test_2_data.images, test_2_data.labels);
+
     return 0;
 }
