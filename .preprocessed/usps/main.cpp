@@ -152,6 +152,6 @@ void convert_usps(const std::string& usps_path,
 
 int main() {
     convert_usps("usps_raw/usps",   "../data/usps/usps_images.bin",   "../data/usps/usps_labels.bin");
-    convert_usps("usps_raw/usps.t", "../data/usps/usps_t_images.bin", "../data/usps/usps_t_labels.bin");
+    convert_usps("usps_raw/usps_test", "../data/usps/usps_t_images.bin", "../data/usps/usps_t_labels.bin");
     return 0;
 }
