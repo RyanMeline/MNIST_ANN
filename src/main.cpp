@@ -17,17 +17,17 @@
 #include "../include/network.h"
 
 //Training Data
-const std::string train_data_path = "data/mnist/train-images.idx3-ubyte";
-const std::string train_label_path = "data/mnist/train-labels.idx1-ubyte";
+const std::string training_data_images = "data/mnist/train-images.idx3-ubyte";
+const std::string training_data_labels = "data/mnist/train-labels.idx1-ubyte";
 
 //Validation Data
-const std::string validation_data_path = "data/mnist/t10k-images.idx3-ubyte";
-const std::string validation_label_path = "data/mnist/t10k-labels.idx1-ubyte";
+const std::string validation_data_images = "data/mnist/t10k-images.idx3-ubyte";
+const std::string validation_data_labels = "data/mnist/t10k-labels.idx1-ubyte";
 
 //USPS testing Data
-const std::string usps_data = "data/usps/usps_images.bin";
+const std::string usps_images = "data/usps/usps_images.bin";
 const std::string usps_labels = "data/usps/usps_labels.bin";
-const std::string usps_test_data = "data/usps/usps_t_images.bin";
+const std::string usps_test_images = "data/usps/usps_t_images.bin";
 const std::string usps_test_labels = "data/usps/usps_t_labels.bin";
 
 //Family testing Data
@@ -81,16 +81,16 @@ int main() {
     printLogo();                                                   
                                                                                             
     std::cout << "Loading training data set\n";
-    load_data::Dataset train_data = load_data::read_input(train_data_path, train_label_path);
+    load_data::Dataset training_data = load_data::read_input(training_data_images, training_data_labels);
 
     std::cout << "Loading validation data set\n";
-    load_data::Dataset validation_data = load_data::read_input(validation_data_path, validation_label_path);
+    load_data::Dataset validation_data = load_data::read_input(validation_data_images, validation_data_labels);
 
     std::cout << "Loading USPS data set\n";
-    load_data::Dataset test_data = load_data::read_input(usps_data, usps_labels);
+    load_data::Dataset usps = load_data::read_input(usps_images, usps_labels);
 
     std::cout << "Loading USPS test data set\n";
-    load_data::Dataset test_2_data = load_data::read_input(usps_test_data, usps_test_labels); 
+    load_data::Dataset usps_test = load_data::read_input(usps_test_images, usps_test_labels); 
 
     std::cout << "Loading Dad's handwriting set\n";
     load_data::Dataset dad = load_data::read_input(dad_images, dad_labels);
@@ -125,7 +125,7 @@ int main() {
     std::cout << "Starting Learning rate: " << learning_rate << "\n\n";
 
     //For shuffling the training data (need to shuffle indicies rather than the items themselves because labels and images need to stay together)
-    std::vector<int> index(train_data.images.size());
+    std::vector<int> index(training_data.images.size());
     std::iota(index.begin(), index.end(), 0); //fills indecies
 
     for(int i = 1; i <= epochs; i++) {
@@ -135,8 +135,8 @@ int main() {
 
         learning_rate = step_learning_rate(learning_rate, decay_rate, min_learning_rate, epochs_per_decay, i);
 
-        if(do_batch_train) network.train_all_batch(train_data.images, train_data.labels, index, learning_rate, batch_size);
-        else network.train_all(train_data.images, train_data.labels, index, learning_rate);
+        if(do_batch_train) network.train_all_batch(training_data.images, training_data.labels, index, learning_rate, batch_size);
+        else network.train_all(training_data.images, training_data.labels, index, learning_rate);
         
         std::cout << std::endl;
         float accuracy = network.eval(validation_data.images, validation_data.labels) * 100;
@@ -144,8 +144,8 @@ int main() {
     }
 
     network.results_path = make_results_directory();
-    // network.test(test_data.images, test_data.labels); 
-    // network.test(test_2_data.images, test_2_data.labels);
+    // network.test(usps.images, usps.labels); 
+    // network.test(usps_test.images, usps_test.labels);
     // network.test(dad.images, dad.labels);
     network.test(mom.images, mom.labels);
     network.save_results();
