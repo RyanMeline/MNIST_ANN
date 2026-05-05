@@ -1,22 +1,14 @@
 #include "../include/activation_functions.h"
 
 namespace activation_function {
-    // float relu(float x) {
-    //     return(std::max(0.0f, x));
-    // }
-
-    // //For back prop
-    // float relu_back(float x) {
-    //     return x > 0.0f ? 1.0f : 0.0f;
-    // }
 
     Eigen::VectorXf relu(const Eigen::VectorXf& input) {
         return input.array().max(0.0f);
     }
 
-    //back prop
     Eigen::VectorXf relu_back(const Eigen::VectorXf& input) {
         //unaryExpr applies the passed in function or whatever it is to each element in the array
+        //ReLU derivative is return 1 if x > 0, return 0 if x < 0, if x = 0, its undefined, but do either (I'm returning 0)
         return input.array().unaryExpr([](float x) { return x > 0.0f ? 1.0f : 0.0f; });
     }
 
