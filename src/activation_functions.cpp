@@ -26,7 +26,6 @@ namespace activation_function {
     //     std::vector<float> probabilities;
     //     int input_size = input.size();
     //     probabilities.resize(input_size);
-    //     //fuckin idk
     //     float summation = 0.0f;
     //     float max = 0.0f;
     //     for(float x : input) {
