@@ -144,9 +144,9 @@ int main() {
     }
 
     network.results_path = make_results_directory();
-    // network.test(usps.images, usps.labels); 
-    // network.test(usps_test.images, usps_test.labels);
-    // network.test(dad.images, dad.labels);
+    network.test(usps.images, usps.labels); 
+    network.test(usps_test.images, usps_test.labels);
+    network.test(dad.images, dad.labels);
     network.test(mom.images, mom.labels);
     network.save_results();
 
